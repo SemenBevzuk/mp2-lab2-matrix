@@ -29,7 +29,7 @@ public:
   ~TVector();
   int GetSize() const       { return Size;       } // размер вектора
   int GetStartIndex() const { return StartIndex; } // индекс первого элемента
-  ValType& operator[](int pos);             // доступ
+  ValType& operator[](int pos) const;             // доступ
   bool operator==(const TVector &v) const;  // сравнение
   bool operator!=(const TVector &v) const;  // сравнение
   TVector& operator=(const TVector &v);     // присваивание
@@ -95,21 +95,38 @@ TVector<ValType>::~TVector()
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // доступ
-ValType& TVector<ValType>::operator[](int pos)
+ValType& TVector<ValType>::operator[](int pos) const
 {
+	if (pos<0)
+	{
+		throw invalid_argument("[] pos<0");
+	}
+	if (pos>MAX_VECTOR_SIZE)
+	{
+		throw invalid_argument("[] MAX_VECTOR_SIZE<pos");
+	}
 	return pVector[pos];
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
 bool TVector<ValType>::operator==(const TVector &v) const
 {
-	return 0;
+	if (Size != v.GetSize() || StartIndex != v.GetStartIndex())
+	{
+		return false;
+	}
+	for (int i = 0; i < Size; i++) {
+		if ((*this)[i] != v[i]) {
+			return false;
+		}
+	}
+	return true;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
 bool TVector<ValType>::operator!=(const TVector &v) const
 {
-	return 0;
+	return !(*this==v);
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // присваивание
@@ -132,18 +149,28 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 template <class ValType> // прибавить скаляр
 TVector<ValType> TVector<ValType>::operator+(const ValType &val)
 {
+	for (int i = 0; i < GetSize(); i++) {
+		(*this)[i] = (*this)[i] + val;
+	}
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // вычесть скаляр
 TVector<ValType> TVector<ValType>::operator-(const ValType &val)
 {
+	for (int i = 0; i < GetSize(); i++) {
+		(*this)[i] = (*this)[i] - val;
+	}
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // умножить на скаляр
 TVector<ValType> TVector<ValType>::operator*(const ValType &val)
 {
+	for (int i = 0; i < GetSize();i++)
+	{
+		(*this)[i] = (*this)[i] * val;
+	}
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
