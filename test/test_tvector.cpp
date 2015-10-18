@@ -31,12 +31,25 @@ TEST(TVector, can_create_copied_vector)
 
 TEST(TVector, copied_vector_is_equal_to_source_one)
 {
-  ADD_FAILURE();
+	int size = 2;
+	TVector<int> a(size);
+	a[0] = 1;
+	a[1] = 2;
+	TVector<int> b=a;
+	EXPECT_EQ(1, b[0]);
+	EXPECT_EQ(2, b[1]);
 }
 
 TEST(TVector, copied_vector_has_its_own_memory)
 {
-  ADD_FAILURE();
+	int size = 3;
+	TVector<int> a(size);
+	TVector<int> b=a;
+
+ 	//a = a.pVector;
+
+	EXPECT_NE(&a[0], &(b[0]));
+	//ADD_FAILURE();
 }
 
 TEST(TVector, can_get_size)
@@ -73,7 +86,14 @@ TEST(TVector, throws_when_set_element_with_too_large_index)
 
 TEST(TVector, can_assign_vector_to_itself)
 {
-  ADD_FAILURE();
+	int size = 2;
+	int s_e, s_a;
+	TVector<int> a(size);
+	a[0] = 1;
+	a[1] = 2;
+	a = a;
+	EXPECT_EQ(1, a[0]);
+	EXPECT_EQ(2, a[1]);
 }
 
 TEST(TVector, can_assign_vectors_of_equal_size)

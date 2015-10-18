@@ -27,8 +27,8 @@ public:
   TVector(int s = 10, int si = 0);
   TVector(const TVector &v);                // конструктор копирования
   ~TVector();
-  int GetSize()      { return Size;       } // размер вектора
-  int GetStartIndex(){ return StartIndex; } // индекс первого элемента
+  int GetSize() const       { return Size;       } // размер вектора
+  int GetStartIndex() const { return StartIndex; } // индекс первого элемента
   ValType& operator[](int pos);             // доступ
   bool operator==(const TVector &v) const;  // сравнение
   bool operator!=(const TVector &v) const;  // сравнение
@@ -60,8 +60,12 @@ public:
 };
 
 template <class ValType>
-TVector<ValType>::TVector(int s, int si)
+TVector<ValType>::TVector(int s, int si = 0)
 {
+	if (s>MAX_VECTOR_SIZE)
+	{
+		throw invalid_argument("Конструктор MAX_VECTOR_SIZE<s");
+	}
 	if (s<0)
 	{
 		throw invalid_argument("Конструктор s<0");
@@ -77,12 +81,17 @@ TVector<ValType>::TVector(int s, int si)
 template <class ValType> //конструктор копирования
 TVector<ValType>::TVector(const TVector<ValType> &v)
 {
+	Size = v.Size;
+	StartIndex = v.StartIndex;
+	pVector = new ValType[v.Size];
+	memcpy(pVector, v.pVector, sizeof(ValType)*Size);
 
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType>
 TVector<ValType>::~TVector()
 {
+	delete []pVector;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // доступ
@@ -104,8 +113,19 @@ bool TVector<ValType>::operator!=(const TVector &v) const
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // присваивание
-TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
+TVector<ValType>& TVector<ValType>::operator=(const TVector &v) 
 {
+	if (this != &v)
+	{
+		if (Size != v.GetSize())
+		{
+			delete[]pVector;
+			pVector = new ValType[v.Size];
+		}
+		Size = v.GetSize();
+		StartIndex = v.GetStartIndex();
+		memcpy(pVector, v.pVector, sizeof(ValType)*v.GetSize());
+	}
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
