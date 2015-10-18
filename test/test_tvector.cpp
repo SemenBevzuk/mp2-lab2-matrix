@@ -194,31 +194,78 @@ TEST(TVector, can_multiply_scalar_by_vector)
 
 TEST(TVector, can_add_vectors_with_equal_size)
 {
-  ADD_FAILURE();
+	TVector<int> a(2), b(2);
+	TVector<int> actual(2);
+	TVector<int> expected(2);
+	a[0] = 1;
+	a[1] = 2;
+
+	b[0] = 1;
+	b[1] = 2;
+
+	actual = a + b;
+
+	expected[0] = 2;
+	expected[1] = 4;
+
+	EXPECT_EQ(expected, actual);
 }
 
 TEST(TVector, cant_add_vectors_with_not_equal_size)
 {
-  ADD_FAILURE();
+	TVector<int> a(2), b(3);
+	
+	ASSERT_ANY_THROW(a+b);
 }
 
 TEST(TVector, can_subtract_vectors_with_equal_size)
 {
-  ADD_FAILURE();
+	TVector<int> a(2), b(2);
+	TVector<int> actual(2);
+	TVector<int> expected(2);
+	a[0] = 2;
+	a[1] = 4;
+
+	b[0] = 1;
+	b[1] = 3;
+
+	actual = a - b;
+
+	expected[0] = 1;
+	expected[1] = 1;
+
+	EXPECT_EQ(expected, actual);
 }
 
 TEST(TVector, cant_subtract_vectors_with_not_equal_size)
 {
-  ADD_FAILURE();
+	TVector<int> a(2), b(3);
+
+	ASSERT_ANY_THROW(a - b);
 }
 
 TEST(TVector, can_multiply_vectors_with_equal_size)
 {
-  ADD_FAILURE();
+	TVector<int> a(2), b(2);
+	int actual;
+	int expected;
+	a[0] = 2;
+	a[1] = 4;
+
+	b[0] = 1;
+	b[1] = 3;
+
+	actual = a * b;
+
+	expected = 14;
+
+	EXPECT_EQ(expected, actual);
 }
 
 TEST(TVector, cant_multiply_vectors_with_not_equal_size)
 {
-  ADD_FAILURE();
+	TVector<int> a(2), b(3);
+
+	ASSERT_ANY_THROW(a*b);
 }
 

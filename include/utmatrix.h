@@ -76,6 +76,10 @@ TVector<ValType>::TVector(int s, int si = 0)
 	pVector = new ValType[s];
 	Size = s;
 	StartIndex = si;
+	for (int i = 0; i < Size; i++)
+	{
+		pVector[i] = 0;
+	}
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> //конструктор копирования
@@ -177,19 +181,43 @@ TVector<ValType> TVector<ValType>::operator*(const ValType &val)
 template <class ValType> // сложение
 TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 {
-	return *this;
+	
+	if (GetSize() == v.GetSize()) {
+		TVector<ValType> result(GetSize());
+
+		for (int i = 0; i < GetSize(); i++) {
+			result[i] = (*this)[i] + v[i];
+		}
+		return result;
+	}
+	throw invalid_argument("Сложение векторов разной длины");
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // вычитание
 TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v)
 {
-	return *this;
+	if (GetSize() == v.GetSize()) {
+		TVector<ValType> result(GetSize());
+
+		for (int i = 0; i < GetSize(); i++) {
+			result[i] = (*this)[i] - v[i];
+		}
+		return result;
+	}
+	throw invalid_argument("Вычитание векторов разной длины");
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // скалярное произведение
 ValType TVector<ValType>::operator*(const TVector<ValType> &v)
 {
-	return *this;
+	ValType result=0;
+	if (GetSize() == v.GetSize()) {
+		for (int i = 0; i < GetSize(); i++) {
+			result = result + (*this)[i] * v[i];
+		}
+		return result;
+	}
+	throw invalid_argument("Скалярное произведение векторов разной длины");
 } /*-------------------------------------------------------------------------*/
 
 
