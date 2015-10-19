@@ -118,10 +118,14 @@ ValType& TVector<ValType>::operator[](int pos) const
 template <class ValType> // сравнение
 bool TVector<ValType>::operator==(const TVector &v) const
 {
-	if (Size != v.GetSize() || StartIndex != v.GetStartIndex())
+	if (Size != v.GetSize())
 	{
 		return false;
 	}
+	/*if (StartIndex != v.GetStartIndex())
+	{
+		return false;
+	}*/
 	for (int i = 0; i < Size; i++) {
 		if ((*this)[i] != v[i]) {
 			return false;
@@ -185,7 +189,7 @@ template <class ValType> // сложение
 TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 {
 	
-	if (GetSize() == v.GetSize()) {
+	if ((GetSize() == v.GetSize()) && (GetStartIndex() == v.GetStartIndex())) {
 		TVector<ValType> result(GetSize());
 
 		for (int i = 0; i < GetSize(); i++) {
@@ -290,7 +294,7 @@ bool TMatrix<ValType>::operator==(const TMatrix<ValType> &mt) const
 		return true;
 	}
 
-	if (Size != mt.Size) {
+	if (Size != mt.GetSize()) {
 		return false;
 	}
 
@@ -302,7 +306,7 @@ bool TMatrix<ValType>::operator==(const TMatrix<ValType> &mt) const
 	return true;
 } /*-------------------------------------------------------------------------*/
 
-template <class ValType> // сравнение
+template <class ValType> // сравнение !=
 bool TMatrix<ValType>::operator!=(const TMatrix<ValType> &mt) const
 {
 	return !(*this==mt);
@@ -317,7 +321,7 @@ TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 			pVector = new TVector<ValType>[mt.Size];
 		}
 		Size = mt.Size;
-		StartIndex = mt.StartIndex;
+		StartIndex = mt.GetStartIndex();
 		for (int i = 0; i < Size; i++) {
 			pVector[i] = mt.pVector[i];
 		}
@@ -328,13 +332,29 @@ TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 template <class ValType> // сложение
 TMatrix<ValType> TMatrix<ValType>::operator+(const TMatrix<ValType> &mt)
 {
-	return *this;
+	if (Size!=mt.GetSize())
+	{
+		throw invalid_argument("Матрицы разного размера +");
+	}
+	TMatrix<ValType> resualt(Size);
+	for (int i = 0; i < Size; i++)
+	{
+		resualt[i] = pVector[i] + mt.pVector[i];
+	}
+	return resualt;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // вычитание
 TMatrix<ValType> TMatrix<ValType>::operator-(const TMatrix<ValType> &mt)
 {
-	return *this;
+	if (Size != mt.GetSize()) {
+		throw invalid_argument("Матрицы разного размера -");
+	}
+	TMatrix<ValType> resualt(Size);
+	for (int i = 0; i < Size; i++) {
+		resualt[i] = pVector[i] - mt.pVector[i];
+	}
+	return resualt;
 } /*-------------------------------------------------------------------------*/
 
 // TVector О3 Л2 П4 С6

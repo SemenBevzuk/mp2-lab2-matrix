@@ -131,26 +131,43 @@ TEST(TMatrix, compare_matrix_with_itself_return_true)
 
 TEST(TMatrix, matrices_with_different_size_are_not_equal)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3), b(2);
+	EXPECT_FALSE(b == a);
 }
 
 TEST(TMatrix, can_add_matrices_with_equal_size)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3), b(3);
+	TMatrix<int> resualt(3);
+	resualt[1][1] = 1;
+	resualt[2][2] = 1;
+	a[1][1] = 1;
+	a[2][2] = 1;
+
+	EXPECT_EQ(resualt,a+b);
 }
 
 TEST(TMatrix, cant_add_matrices_with_not_equal_size)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3),b(4);
+	ASSERT_ANY_THROW(a+b);
 }
 
 TEST(TMatrix, can_subtract_matrices_with_equal_size)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3), b(3);
+	TMatrix<int> resualt(3);
+	resualt[1][1] = 1;
+	resualt[2][2] = 1;
+	a[1][1] = 1;
+	a[2][2] = 1;
+
+	EXPECT_EQ(resualt, a - b);
 }
 
 TEST(TMatrix, cant_subtract_matrixes_with_not_equal_size)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3), b(4);
+	ASSERT_ANY_THROW(a - b);
 }
 
