@@ -119,12 +119,14 @@ TEST(TMatrix, can_assign_matrices_of_different_size)
 
 TEST(TMatrix, compare_equal_matrices_return_true)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3), b(3);
+	EXPECT_TRUE(b == a);
 }
 
 TEST(TMatrix, compare_matrix_with_itself_return_true)
 {
-  ADD_FAILURE();
+	TMatrix<int> a(3);
+	EXPECT_TRUE(a == a);
 }
 
 TEST(TMatrix, matrices_with_different_size_are_not_equal)
