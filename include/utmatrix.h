@@ -24,7 +24,7 @@ protected:
   int Size;       // размер вектора
   int StartIndex; // индекс первого элемента вектора
 public:
-  TVector(int s = 10, int si = 0);
+	TVector( int s = 10, int si = 0);
   TVector(const TVector &v);                // конструктор копирования
   virtual ~TVector();
   int GetSize() const       { return Size;       } // размер вектора
@@ -78,8 +78,9 @@ TVector<ValType>::TVector(int s, int si = 0)
 	StartIndex = si;
 	for (int i = 0; i < Size; i++)
 	{
-		pVector[i] = 0;
+		(*this)[i] = ValType();
 	}
+
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> //конструктор копирования
@@ -98,7 +99,7 @@ TVector<ValType>::TVector(const TVector<ValType> &v)
 template <class ValType>
 TVector<ValType>::~TVector()
 {
-	delete[]pVector;
+	delete []pVector;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // доступ
@@ -115,6 +116,7 @@ ValType& TVector<ValType>::operator[](int pos) const
 	return pVector[pos];
 } /*-------------------------------------------------------------------------*/
 
+
 template <class ValType> // сравнение
 bool TVector<ValType>::operator==(const TVector &v) const
 {
@@ -122,10 +124,10 @@ bool TVector<ValType>::operator==(const TVector &v) const
 	{
 		return false;
 	}
-	/*if (StartIndex != v.GetStartIndex())
-	{
+	if (StartIndex != v.GetStartIndex()) {
 		return false;
-	}*/
+	}
+	
 	for (int i = 0; i < Size; i++) {
 		if ((*this)[i] != v[i]) {
 			return false;
@@ -152,7 +154,10 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 		}
 		Size = v.GetSize();
 		StartIndex = v.GetStartIndex();
-		memcpy(pVector, v.pVector, sizeof(ValType)*v.GetSize());
+		for (int i = 0; i < Size; i++)
+		{
+			(*this)[i] = v[i];
+		}
 	}
 	return *this;
 } /*-------------------------------------------------------------------------*/
@@ -182,6 +187,7 @@ TVector<ValType> TVector<ValType>::operator*(const ValType &val)
 	{
 		(*this)[i] = (*this)[i] * val;
 	}
+
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
@@ -263,17 +269,17 @@ TMatrix<ValType>::TMatrix(int s): TVector<TVector<ValType> >(s)
 {
 	if (s<0)
 	{
-		throw "s<0";
+		throw invalid_argument("s<0 в Matrix");
 	}
 	if (s>MAX_MATRIX_SIZE) {
-		throw "MAX_MATRIX_SIZE<s";
+		throw invalid_argument("MAX_MATRIX_SIZE<s в Matrix");
 	}
 	for (int i = 0; i < s; i++) {
-		pVector[i] = TVector<ValType>(s, i);
+		pVector[i] = TVector<ValType>(s-i, i);
 	}
 
 	for (int i = 0; i < s; i++) {
-		for (int j = 0; j < s; j++) {
+		for (int j = 0; j < s-i; j++) {
 			pVector[i][j] = 0;
 		}
 	}
@@ -298,7 +304,7 @@ bool TMatrix<ValType>::operator==(const TMatrix<ValType> &mt) const
 		return false;
 	}
 
-	for (int i = StartIndex; i < Size; i++) {
+	for (int i = 0; i < Size; i++) {
 		if (pVector[i] != mt.pVector[i])
 			return false;
 	}
@@ -318,7 +324,7 @@ TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 	if (this != &mt) {
 		if (Size != mt.Size) {
 			delete []pVector;
-			pVector = new TVector<ValType>[mt.Size];
+			pVector = new TVector<ValType>(0, mt.Size);
 		}
 		Size = mt.Size;
 		StartIndex = mt.GetStartIndex();

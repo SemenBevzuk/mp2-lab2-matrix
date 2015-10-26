@@ -96,6 +96,7 @@ TEST(TVector, can_assign_vector_to_itself)
 	a = a;
 	EXPECT_EQ(1, a[0]);
 	EXPECT_EQ(2, a[1]);
+	EXPECT_TRUE(a==a);
 }
 
 TEST(TVector, can_assign_vectors_of_equal_size)
