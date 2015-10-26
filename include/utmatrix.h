@@ -199,7 +199,7 @@ TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 {
 	
 	if ((GetSize() == v.GetSize()) && (GetStartIndex() == v.GetStartIndex())) {
-		TVector<ValType> result(GetSize());
+		TVector<ValType> result(GetSize(),GetStartIndex());
 
 		for (int i = StartIndex; i < Size + StartIndex; i++) {
 			result[i] = (*this)[i] + v[i];
@@ -326,14 +326,13 @@ TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 {
 	if (this != &mt) {
 		if (Size != mt.Size) {
-			delete []pVector;
-			pVector = new TVector<ValType>(0, mt.Size);
+			delete[] pVector;
+			pVector = new TVector<ValType>[mt.Size];
 		}
 		Size = mt.Size;
-		StartIndex = mt.GetStartIndex();
-		for (int i = 0; i < Size; i++) {
+		StartIndex = mt.StartIndex;
+		for (int i = 0; i < Size; i++)
 			pVector[i] = mt.pVector[i];
-		}
 	}
 	return *this;
 } /*-------------------------------------------------------------------------*/

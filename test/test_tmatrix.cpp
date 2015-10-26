@@ -143,8 +143,9 @@ TEST(TMatrix, can_add_matrices_with_equal_size)
 	resualt[2][2] = 1;
 	a[1][1] = 1;
 	a[2][2] = 1;
+	TMatrix<int> c = a + b;
 
-	EXPECT_EQ(resualt,a+b);
+	EXPECT_EQ(resualt,c);
 }
 
 TEST(TMatrix, cant_add_matrices_with_not_equal_size)
