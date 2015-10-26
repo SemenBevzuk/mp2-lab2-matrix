@@ -63,6 +63,12 @@ TEST(TVector, can_get_start_index)
   EXPECT_EQ(2, v.GetStartIndex());
 }
 
+TEST(TVector, can_get_element_less_then_start_index) {
+	TVector<int> v(2, 1);
+
+	EXPECT_EQ(0, v[0]);
+}
+
 TEST(TVector, can_set_and_get_element)
 {
   TVector<int> v(4);

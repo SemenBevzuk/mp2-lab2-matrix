@@ -156,13 +156,14 @@ TEST(TMatrix, cant_add_matrices_with_not_equal_size)
 TEST(TMatrix, can_subtract_matrices_with_equal_size)
 {
 	TMatrix<int> a(3), b(3);
-	TMatrix<int> resualt(3);
-	resualt[1][1] = 1;
-	resualt[2][2] = 1;
+	TMatrix<int> result(3);
+	result[0][0] = 1;
+	result[1][1] = 1;
+	a[0][0] = 1;
 	a[1][1] = 1;
-	a[2][2] = 1;
 
-	EXPECT_EQ(resualt, a - b);
+	TMatrix<int> c = a - b;
+	EXPECT_EQ(result, c);
 }
 
 TEST(TMatrix, cant_subtract_matrixes_with_not_equal_size)

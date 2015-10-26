@@ -76,7 +76,7 @@ TVector<ValType>::TVector(int s, int si = 0)
 	pVector = new ValType[s];
 	Size = s;
 	StartIndex = si;
-	for (int i = 0; i < Size; i++)
+	for (int i = StartIndex; i < Size+StartIndex; i++)
 	{
 		(*this)[i] = ValType();
 	}
@@ -90,7 +90,7 @@ TVector<ValType>::TVector(const TVector<ValType> &v)
 	StartIndex = v.StartIndex;
 	pVector = new ValType[Size];
 
-	for (int i = 0; i < Size; i++) {
+	for (int i = StartIndex; i < Size + StartIndex; i++) {
 		pVector[i] = v.pVector[i];
 	}
 
@@ -109,11 +109,14 @@ ValType& TVector<ValType>::operator[](int pos) const
 	{
 		throw invalid_argument("[] pos<0");
 	}
-	if (pos>MAX_VECTOR_SIZE)
+	if (pos>=StartIndex+Size)
 	{
-		throw invalid_argument("[] MAX_VECTOR_SIZE<pos");
+		throw invalid_argument("[] pos>MAX_VECTOR_SIZE");
 	}
-	return pVector[pos];
+	if (pos<StartIndex) {
+		return *new ValType();
+	}
+	return pVector[pos-StartIndex];
 } /*-------------------------------------------------------------------------*/
 
 
@@ -128,7 +131,7 @@ bool TVector<ValType>::operator==(const TVector &v) const
 		return false;
 	}
 	
-	for (int i = 0; i < Size; i++) {
+	for (int i = StartIndex; i < Size + StartIndex; i++) {
 		if ((*this)[i] != v[i]) {
 			return false;
 		}
@@ -154,7 +157,7 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 		}
 		Size = v.GetSize();
 		StartIndex = v.GetStartIndex();
-		for (int i = 0; i < Size; i++)
+		for (int i = StartIndex; i < Size+StartIndex; i++)
 		{
 			(*this)[i] = v[i];
 		}
@@ -165,7 +168,7 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 template <class ValType> // прибавить скаляр
 TVector<ValType> TVector<ValType>::operator+(const ValType &val)
 {
-	for (int i = 0; i < GetSize(); i++) {
+	for (int i = StartIndex; i < Size + StartIndex; i++) {
 		(*this)[i] = (*this)[i] + val;
 	}
 	return *this;
@@ -174,7 +177,7 @@ TVector<ValType> TVector<ValType>::operator+(const ValType &val)
 template <class ValType> // вычесть скаляр
 TVector<ValType> TVector<ValType>::operator-(const ValType &val)
 {
-	for (int i = 0; i < GetSize(); i++) {
+	for (int i = StartIndex; i < Size + StartIndex; i++) {
 		(*this)[i] = (*this)[i] - val;
 	}
 	return *this;
@@ -183,7 +186,7 @@ TVector<ValType> TVector<ValType>::operator-(const ValType &val)
 template <class ValType> // умножить на скаляр
 TVector<ValType> TVector<ValType>::operator*(const ValType &val)
 {
-	for (int i = 0; i < GetSize();i++)
+	for (int i = StartIndex; i < Size + StartIndex; i++)
 	{
 		(*this)[i] = (*this)[i] * val;
 	}
@@ -198,7 +201,7 @@ TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 	if ((GetSize() == v.GetSize()) && (GetStartIndex() == v.GetStartIndex())) {
 		TVector<ValType> result(GetSize());
 
-		for (int i = 0; i < GetSize(); i++) {
+		for (int i = StartIndex; i < Size + StartIndex; i++) {
 			result[i] = (*this)[i] + v[i];
 		}
 		return result;
@@ -210,9 +213,9 @@ template <class ValType> // вычитание
 TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v)
 {
 	if (GetSize() == v.GetSize()) {
-		TVector<ValType> result(GetSize());
+		TVector<ValType> result(GetSize(),GetStartIndex());
 
-		for (int i = 0; i < GetSize(); i++) {
+		for (int i = StartIndex; i < Size + StartIndex; i++) {
 			result[i] = (*this)[i] - v[i];
 		}
 		return result;
@@ -225,7 +228,7 @@ ValType TVector<ValType>::operator*(const TVector<ValType> &v)
 {
 	ValType result=0;
 	if (GetSize() == v.GetSize()) {
-		for (int i = 0; i < GetSize(); i++) {
+		for (int i = StartIndex; i < Size + StartIndex; i++) {
 			result = result + (*this)[i] * v[i];
 		}
 		return result;
@@ -279,7 +282,7 @@ TMatrix<ValType>::TMatrix(int s): TVector<TVector<ValType> >(s)
 	}
 
 	for (int i = 0; i < s; i++) {
-		for (int j = 0; j < s-i; j++) {
+		for (int j = (*this)[i].GetStartIndex(); j < (*this)[i].GetStartIndex() + (*this)[i].GetSize(); j++) {
 			pVector[i][j] = 0;
 		}
 	}
@@ -356,11 +359,11 @@ TMatrix<ValType> TMatrix<ValType>::operator-(const TMatrix<ValType> &mt)
 	if (Size != mt.GetSize()) {
 		throw invalid_argument("Матрицы разного размера -");
 	}
-	TMatrix<ValType> resualt(Size);
+	TMatrix<ValType> result(Size);
 	for (int i = 0; i < Size; i++) {
-		resualt[i] = pVector[i] - mt.pVector[i];
+		result[i] = (*this)[i] - mt[i];
 	}
-	return resualt;
+	return result;
 } /*-------------------------------------------------------------------------*/
 
 // TVector О3 Л2 П4 С6
