@@ -53,8 +53,8 @@ public:
   }
   friend ostream& operator<<(ostream &out, const TVector &v)
   {
-    for (int i = 0; i < v.Size; i++)
-      out << v.pVector[i] << ' ';
+    for (int i = 0; i < v.Size + v.StartIndex; i++)
+      out << v[i] << ' ';
     return out;
   }
 };
@@ -90,7 +90,7 @@ TVector<ValType>::TVector(const TVector<ValType> &v)
 	StartIndex = v.StartIndex;
 	pVector = new ValType[Size];
 
-	for (int i = StartIndex; i < Size + StartIndex; i++) {
+	for (int i = 0; i < Size; i++) {
 		pVector[i] = v.pVector[i];
 	}
 
@@ -198,15 +198,17 @@ template <class ValType> // сложение
 TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 {
 	
-	if ((GetSize() == v.GetSize()) && (GetStartIndex() == v.GetStartIndex())) {
-		TVector<ValType> result(GetSize(),GetStartIndex());
-
-		for (int i = StartIndex; i < Size + StartIndex; i++) {
-			result[i] = (*this)[i] + v[i];
-		}
-		return result;
+	if (GetSize() != v.GetSize() || GetStartIndex() != v.GetStartIndex())
+	{
+		throw invalid_argument("Сложение векторов разной длины");
 	}
-	throw invalid_argument("Сложение векторов разной длины");
+
+	TVector<ValType> result(GetSize(), GetStartIndex());
+
+	for (int i = StartIndex; i < Size + StartIndex; i++) {
+		result[i] = (*this)[i] + v[i];
+	}
+	return result;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // вычитание
@@ -261,8 +263,8 @@ public:
   }
   friend ostream & operator<<( ostream &out, const TMatrix &mt)
   {
-    for (int i = 0; i < mt.Size; i++)
-      out << mt.pVector[i] << endl;
+    for (int i = 0; i < mt.Size + mt.GetStartIndex(); i++)
+      out << mt[i] << endl;
     return out;
   }
 };
@@ -344,12 +346,12 @@ TMatrix<ValType> TMatrix<ValType>::operator+(const TMatrix<ValType> &mt)
 	{
 		throw invalid_argument("Матрицы разного размера +");
 	}
-	TMatrix<ValType> resualt(Size);
+	TMatrix<ValType> result(Size);
 	for (int i = 0; i < Size; i++)
 	{
-		resualt[i] = pVector[i] + mt.pVector[i];
+		result[i] = (*this)[i] + mt[i];
 	}
-	return resualt;
+	return result;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // вычитание

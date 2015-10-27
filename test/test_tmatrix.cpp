@@ -137,15 +137,18 @@ TEST(TMatrix, matrices_with_different_size_are_not_equal)
 
 TEST(TMatrix, can_add_matrices_with_equal_size)
 {
-	TMatrix<int> a(3), b(3);
-	TMatrix<int> resualt(3);
-	resualt[1][1] = 1;
-	resualt[2][2] = 1;
+	TMatrix<int> a(3);
+	a[0][0] = 1;
 	a[1][1] = 1;
 	a[2][2] = 1;
-	TMatrix<int> c = a + b;
 
-	EXPECT_EQ(resualt,c);
+	TMatrix<int> sum = a + a;
+
+	TMatrix<int> result(3);
+	result[0][0] = 2;
+	result[1][1] = 2;
+	result[2][2] = 2;
+	EXPECT_EQ(result, sum);
 }
 
 TEST(TMatrix, cant_add_matrices_with_not_equal_size)
