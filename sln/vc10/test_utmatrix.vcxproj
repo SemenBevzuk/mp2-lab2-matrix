@@ -105,11 +105,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\test\test_main.cpp" />
+    <ClCompile Include="..\..\test\test_matrix_pointer.cpp" />
     <ClCompile Include="..\..\test\test_tmatrix.cpp" />
     <ClCompile Include="..\..\test\test_tvector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\matrix_pointer.h" />
     <ClInclude Include="..\..\include\utmatrix.h" />
+    <ClInclude Include="tvector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

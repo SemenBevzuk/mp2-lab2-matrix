@@ -2,6 +2,23 @@
 
 #include <gtest.h>
 
+//using namespace testing;
+//
+//class TMatrixTest : public Test
+//{
+//private:
+//	TMatrix<int> m;
+//
+//public:
+//	void Create(int size) {
+//		m = TMatrix<int>(size);
+//	}
+//};
+//
+//TEST_F(TMatrixTest, can_create_matrix_with_positive_length) {
+//	ASSERT_NO_THROW(Create(5));
+//}
+
 TEST(TMatrix, can_create_matrix_with_positive_length)
 {
   ASSERT_NO_THROW(TMatrix<int> m(5));
@@ -27,6 +44,7 @@ TEST(TMatrix, can_create_copied_matrix)
 TEST(TMatrix, copied_matrix_is_equal_to_source_one)
 {
 	TMatrix<int> m(3);
+
 	m[1][1] = 1;
 
 	TMatrix<int> m1(m);

@@ -1,0 +1,223 @@
+#include "matrix_pointer.h"
+
+#include <gtest.h>
+
+
+TEST(TPointerMatrix, _can_create_matrix_with_positive_length) {
+	ASSERT_NO_THROW(TPointerMatrix<int> m(5));
+}
+
+TEST(TPointerMatrix, cant_create_too_large_matrix) {
+	ASSERT_ANY_THROW(TPointerMatrix<int> m(MAX_MATRIX_SIZE + 1));
+}
+
+TEST(TPointerMatrix, throws_when_create_matrix_with_negative_length) {
+	ASSERT_ANY_THROW(TPointerMatrix<int> m(-5));
+}
+
+TEST(TPointerMatrix, can_create_copied_matrix) {
+	TPointerMatrix<int> m(5);
+
+	ASSERT_NO_THROW(TPointerMatrix<int> m1(m));
+}
+
+TEST(TPointerMatrix, copied_matrix_is_equal_to_source_one) {
+	TPointerMatrix<int> m(4);
+
+	m[1][1] = 1;
+
+	TPointerMatrix<int> m1(m);
+
+	TPointerMatrix<int> result(4);
+	result[1][1] = 1;
+	
+	EXPECT_EQ(result, m1);
+}
+
+TEST(TPointerMatrix, copied_matrix_has_its_own_memory) {
+	TPointerMatrix<int> m(3);
+	m[1][1] = 1;
+
+	TPointerMatrix<int> m1(m);
+
+	EXPECT_NE(&m, &m1);
+}
+
+TEST(TPointerMatrix, can_get_size) {
+	TPointerMatrix<int> a(5);
+	EXPECT_EQ(5, a.GetSize());
+}
+
+TEST(TPointerMatrix, can_set_and_get_element) {
+	TPointerMatrix<int> m(3);
+	m[1][1] = 1;
+
+	EXPECT_EQ(1, m[1][1]);
+}
+
+TEST(TPointerMatrix, throws_when_set_element_with_negative_index) {
+	TPointerMatrix<int> m(3);
+	ASSERT_ANY_THROW(m[-1][-1] = 0);
+}
+
+TEST(TPointerMatrix, throws_when_set_element_with_too_large_index) {
+	TPointerMatrix<int> m(3);
+	ASSERT_ANY_THROW(m[MAX_VECTOR_SIZE + 1][1] = 0);
+}
+
+TEST(TPointerMatrix, can_assign_matrix_to_itself) {
+	TPointerMatrix<int> m(3);
+	m[0][0] = 1;
+	m[1][1] = 2;
+
+	m = m;
+
+	EXPECT_EQ(1, m[0][0]);
+	EXPECT_EQ(2, m[1][1]);
+}
+
+TEST(TPointerMatrix, can_assign_matrices_of_equal_size) {
+	int size = 3;
+	TPointerMatrix<int> a(size), b(size);
+	a[0][0] = 0;
+	a[1][1] = 1;
+	a[2][2] = 2;
+
+	b = a;
+
+	EXPECT_EQ(0, b[0][0]);
+	EXPECT_EQ(1, b[1][1]);
+	EXPECT_EQ(2, b[2][2]);
+}
+
+TEST(TPointerMatrix, assign_operator_change_matrix_size) {
+	TPointerMatrix<int> a(3);
+	a = TPointerMatrix<int>(4);
+
+	EXPECT_EQ(4, a.GetSize());
+}
+
+TEST(TPointerMatrix, can_assign_matrices_of_different_size) {
+	TPointerMatrix<int> a(3), b(2);
+	b = a;
+
+	EXPECT_EQ(3, b.GetSize());
+}
+
+TEST(TPointerMatrix, compare_equal_matrices_return_true) {
+	TPointerMatrix<int> a(3), b(3);
+	EXPECT_TRUE(b == a);
+}
+
+TEST(TPointerMatrix, compare_matrix_with_itself_return_true) {
+	TPointerMatrix<int> a(3);
+	EXPECT_TRUE(a == a);
+}
+
+TEST(TPointerMatrix, matrices_with_different_size_are_not_equal) {
+	TPointerMatrix<int> a(3), b(2);
+	EXPECT_FALSE(b == a);
+}
+
+TEST(TPointerMatrix, can_add_matrices_with_equal_size) {
+	TPointerMatrix<int> a(3);
+	a[0][0] = 1;
+	a[1][1] = 1;
+	a[2][2] = 1;
+
+	TPointerMatrix<int> sum = a + a;
+
+	TPointerMatrix<int> result(3);
+	result[0][0] = 2;
+	result[1][1] = 2;
+	result[2][2] = 2;
+	EXPECT_EQ(result, sum);
+}
+
+TEST(TPointerMatrix, cant_add_matrices_with_not_equal_size) {
+	TPointerMatrix<int> a(3), b(4);
+	ASSERT_ANY_THROW(a + b);
+}
+
+TEST(TPointerMatrix, can_subtract_matrices_with_equal_size) {
+	TPointerMatrix<int> a(3), b(3);
+	TPointerMatrix<int> result(3);
+	result[0][0] = 1;
+	result[1][1] = 1;
+	a[0][0] = 1;
+	a[1][1] = 1;
+
+	TPointerMatrix<int> c = a - b;
+	EXPECT_EQ(result, c);
+}
+
+TEST(TPointerMatrix, cant_subtract_matrixes_with_not_equal_size) {
+	TPointerMatrix<int> a(3), b(4);
+	ASSERT_ANY_THROW(a - b);
+}
+
+TEST(TPointerMatrix, can_multiplied_by_the_E) {
+	TPointerMatrix<int> a(2), result(2), b(2), e(2);
+	// 1 0
+	// 0 1
+	e[0][0] = 1;
+	e[1][1] = 1;
+	// 1 2
+	// 0 3
+	a[0][0] = 1;
+	a[0][1] = 2;
+	a[1][1] = 3;
+	// 1 2
+	// 0 3
+	result[0][0] = 1;
+	result[0][1] = 2;
+	result[1][1] = 3;
+
+	b = a*e;
+
+	EXPECT_EQ(result, b);
+}
+TEST(TPointerMatrix, can_not_multiplied_matrix_with_different_size) {
+	TPointerMatrix<int> a(2), b(3);
+
+	ASSERT_ANY_THROW(a*b);
+}
+TEST(TPointerMatrix, can_multiplied_matrix_with_equal_sizes) {
+	TPointerMatrix<int> a(2), result(2), b(2);
+
+	// 1 2
+	// 0 3
+	a[0][0] = 1;
+	a[0][1] = 2;
+	a[1][1] = 3;
+	// 3 2
+	// 0 1
+	b[0][0] = 3;
+	b[0][1] = 2;
+	b[1][1] = 1;
+	// 3 4
+	// 0 3
+	result[0][0] = 3;
+	result[0][1] = 4;
+	result[1][1] = 3;
+
+	EXPECT_EQ(result, a*b);
+}
+
+TEST(TPointerMatrix, can_multiplied__matrix_on_itself) {
+	TPointerMatrix<int> a(2), result(2);
+
+	// 1 2
+	// 0 3
+	a[0][0] = 1;
+	a[0][1] = 2;
+	a[1][1] = 3;
+
+	// 3 4
+	// 0 3
+	result[0][0] = 1;
+	result[0][1] = 8;
+	result[1][1] = 9;
+
+	EXPECT_EQ(result, a*a);
+}
