@@ -176,3 +176,68 @@ TEST(TMatrix, cant_subtract_matrixes_with_not_equal_size)
 	ASSERT_ANY_THROW(a - b);
 }
 
+TEST(TMatrix, can_multiplied_by_the_E) {
+	TMatrix<int> a(2), result(2), b(2),e(2);
+	// 1 0
+	// 0 1
+	e[0][0] = 1;
+	e[1][1] = 1;
+	// 1 2
+	// 0 3
+	a[0][0] = 1;
+	a[0][1] = 2;
+	a[1][1] = 3;
+	// 1 2
+	// 0 3
+	result[0][0] = 1;
+	result[0][1] = 2;
+	result[1][1] = 3;
+
+	b = a*e;
+
+	EXPECT_EQ(result, b);
+}
+TEST(TMatrix, can_not_multiplied_matrix_with_different_size) {
+	TMatrix<int> a(2), b(3);
+
+	ASSERT_ANY_THROW(a*b);
+}
+TEST(TMatrix, can_multiplied_matrix_with_equal_sizes) {
+	TMatrix<int> a(2), result(2), b(2);
+
+	// 1 2
+	// 0 3
+	a[0][0] = 1;
+	a[0][1] = 2;
+	a[1][1] = 3;
+	// 3 2
+	// 0 1
+	b[0][0] = 3;
+	b[0][1] = 2;
+	b[1][1] = 1;
+	// 3 4
+	// 0 3
+	result[0][0] = 3;
+	result[0][1] = 4;
+	result[1][1] = 3;
+
+	EXPECT_EQ(result, a*b);
+}
+
+TEST(TMatrix, can_multiplied__matrix_on_itself) {
+	TMatrix<int> a(2), result(2);
+
+	// 1 2
+	// 0 3
+	a[0][0] = 1;
+	a[0][1] = 2;
+	a[1][1] = 3;
+
+	// 3 4
+	// 0 3
+	result[0][0] = 1;
+	result[0][1] = 8;
+	result[1][1] = 9;
+
+	EXPECT_EQ(result, a*a);
+}
