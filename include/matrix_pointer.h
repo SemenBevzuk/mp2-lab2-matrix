@@ -31,7 +31,7 @@ public:
 	friend ostream & operator<<(ostream &out, const TPointerMatrix &mt) {
 		out << mt.Size << endl;
 		for (int i = 0; i < mt.Size; i++)
-			out << mt.pMatrix[i] << endl;
+			out << *(mt.pMatrix[i]) << endl;
 		return out;
 	}
 };
@@ -53,16 +53,23 @@ TPointerMatrix<ValType>::TPointerMatrix(int s){
 template <class ValType>
 TPointerMatrix<ValType>::~TPointerMatrix()
 {
+	for (int i = 0; i < Size; i++)
+	{
+		delete (pMatrix[i]);
+	}
 	delete []pMatrix;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // конструктор копирования
 TPointerMatrix<ValType>::TPointerMatrix(const TPointerMatrix<ValType> &mt){
 	Size = mt.GetSize();
-	this->pMatrix = new  TVector<ValType>*[mt.GetSize()];
+	pMatrix = new  TVector<ValType>* [mt.GetSize()];
+	for (int i = 0; i<Size; i++)
+		pMatrix[i] = new TVector<ValType>(Size - i, i);
+
 	for (int i = 0; i < mt.GetSize();i++)
 	{
-		pMatrix[i] = mt.pMatrix[i];
+		*pMatrix[i] = *(mt.pMatrix[i]);
 	}
 }
 
@@ -106,14 +113,21 @@ bool TPointerMatrix<ValType>::operator!=(const TPointerMatrix<ValType> &mt) cons
 template <class ValType> // присваивание
 TPointerMatrix<ValType>& TPointerMatrix<ValType>::operator=(const TPointerMatrix<ValType> &mt) {
 	if (this != &mt) {
-		if (Size != mt.Size) {
+		if (Size!=mt.GetSize())
+		{
+			for (int i = 0; i < Size; i++) {
+				delete pMatrix[i];
+			}
 			delete []pMatrix;
-		}
-		Size = mt.Size;
 
-		pMatrix = new  TVector<ValType>*[mt.GetSize()];
+			Size = mt.Size;
+			pMatrix = new  TVector<ValType>*[mt.GetSize()];
+			for (int i = 0; i<Size; i++)
+				pMatrix[i] = new TVector<ValType>(Size - i, i);
+		}
+		
 		for (int i = 0; i < mt.GetSize(); i++) {
-			pMatrix[i] = mt.pMatrix[i];
+			*pMatrix[i] = *(mt.pMatrix[i]);
 		}
 	}
 	return *this;

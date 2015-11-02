@@ -2,7 +2,6 @@
 #define __TMATRIX_H__
 
 #include <iostream>
-#include "tvector.h"
 
 using namespace std;
 
@@ -52,13 +51,13 @@ public:
 
 template <class ValType>
 TVector<ValType>::TVector(int s, int si = 0) {
-	if (s>MAX_VECTOR_SIZE) {
+	if (s > MAX_VECTOR_SIZE) {
 		throw invalid_argument("Конструктор MAX_VECTOR_SIZE<s");
 	}
-	if (s<0) {
+	if (s < 0) {
 		throw invalid_argument("Конструктор s<0");
 	}
-	if (si<0) {
+	if (si < 0) {
 		throw invalid_argument("Конструктор si<0");
 	}
 	pVector = new ValType[s];
@@ -84,7 +83,8 @@ TVector<ValType>::TVector(const TVector<ValType> &v) {
 
 template <class ValType>
 TVector<ValType>::~TVector() {
-	delete[]pVector;
+ 	delete []pVector;
+	pVector = NULL;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // доступ
@@ -129,9 +129,11 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v) {
 	if (this != &v) {
 		if (Size != v.GetSize()) {
 			delete[]pVector;
+
+			Size = v.GetSize();
 			pVector = new ValType[v.Size];
 		}
-		Size = v.GetSize();
+
 		StartIndex = v.GetStartIndex();
 		for (int i = StartIndex; i < Size + StartIndex; i++) {
 			(*this)[i] = v[i];
