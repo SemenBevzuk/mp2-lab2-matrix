@@ -5,7 +5,7 @@
 
 TEST(Time, TPointerMatrix_time) {
 	clock_t start, end;
-	int size = 100;
+	int size = 800;
 
 	start = clock();
 	TPointerMatrix<double> a(size), b(size);
@@ -20,7 +20,7 @@ TEST(Time, TPointerMatrix_time) {
 }
 TEST(Time, TMatrix_time) {
 	clock_t start, end;
-	int size = 100;
+	int size = 800;
 
 	start = clock();
 	TMatrix<double> a(size), b(size);
